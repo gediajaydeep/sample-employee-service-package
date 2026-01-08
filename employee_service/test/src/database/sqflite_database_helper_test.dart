@@ -83,5 +83,20 @@ void main() {
       );
       expect(result, isEmpty);
     });
+
+    test('UPDATE: Should respect arguments and return count of modified rows', () async {
+      final id = await dbHelper.insert(
+        'INSERT INTO countries (name, tax_rate) VALUES (?, ?)', ['USA', 0.12]
+      );
+
+      final affected = await dbHelper.update(
+        'UPDATE countries SET tax_rate = ? WHERE id = ?',
+        [0.15, id]
+      );
+
+      expect(affected, 1);
+      final check = await dbHelper.query('SELECT tax_rate FROM countries WHERE id = ?', [id]);
+      expect(check.first['tax_rate'], 0.15);
+    });
   });
 }
