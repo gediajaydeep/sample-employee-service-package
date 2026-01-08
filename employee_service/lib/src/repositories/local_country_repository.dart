@@ -23,9 +23,10 @@ class LocalCountryRepository implements CountryRepository {
   }
 
   @override
-  Future<List<Country>> getAll() {
-    // TODO: implement getAll
-    throw UnimplementedError();
+  Future<List<Country>> getAll() async {
+    const sql = 'SELECT * FROM ${DatabaseSchemas.countriesTable}';
+    final List<Map<String, dynamic>> maps = await _dbHelper.query(sql);
+    return maps.map((map) => Country.fromJson(map)).toList();
   }
 
   @override
