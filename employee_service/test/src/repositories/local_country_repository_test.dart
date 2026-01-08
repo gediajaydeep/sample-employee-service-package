@@ -105,4 +105,37 @@ main() {
 
     expect(repository.getAll(), throwsException);
   });
+
+  test('update() should return 1 when record is updated', () async {
+    final country = Country(id: 1, name: 'India', taxRate: 0.18);
+    when(() => mockDb.update(any(), any())).thenAnswer((_) async => 1);
+
+    final result = await repository.update(country);
+
+    expect(result, 1);
+    verify(
+      () => mockDb.update(
+        any(that: contains('UPDATE countries')),
+        [country.name, country.taxRate, country.id], // Check arg order
+      ),
+    ).called(1);
+  });
+
+  test('update() should return 0 when ID does not exist', () async {
+    final country = Country(id: 999, name: 'Ghost Country', taxRate: 0.0);
+    when(() => mockDb.update(any(), any())).thenAnswer((_) async => 0);
+
+    final result = await repository.update(country);
+
+    expect(result, 0);
+  });
+
+  test('update() should throw exception on update error', () async {
+    final country = Country(id: 1, name: 'Duplicate Name', taxRate: 0.1);
+    when(
+      () => mockDb.update(any(), any()),
+    ).thenThrow(Exception('Database Error: UNIQUE constraint failed'));
+
+    expect(() => repository.update(country), throwsException);
+  });
 }
