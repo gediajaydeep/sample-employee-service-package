@@ -10,5 +10,7 @@ void main() {
         
       },
     );
+    expect(dbHelper.databasePath, equals(dbName));
+    expect(dbHelper.version, equals(1));
   });
 }
