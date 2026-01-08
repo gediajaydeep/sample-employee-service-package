@@ -13,15 +13,15 @@ void main() {
   test('Country model should convert to/from JSON correctly',
   (){
     final json = {
+      'id' : 1,
       'name' : 'India',
       'tax_rate' : 0.10
     };
     final country = Country.fromJson(json);
     expect(country.name, equals(json['name']));
+        expect(country.id, equals(json['id']));
     expect(country.taxRate, equals(json['tax_rate']));
 
     expect(mapEquals(country.toJson(), json), isTrue) ;
-
-
   });
 }
