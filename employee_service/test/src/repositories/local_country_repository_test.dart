@@ -69,6 +69,40 @@ main() {
       ).called(1);
     },
   );
+  test(
+    'getAll() should return a list of Country objects when data exists',
+    () async {
+      final mockRows = [
+        {'id': 1, 'name': 'India', 'tax_rate': 0.10},
+        {'id': 2, 'name': 'USA', 'tax_rate': 0.15},
+      ];
+      when(() => mockDb.query(any(), any())).thenAnswer((_) async => mockRows);
 
-  
+      final result = await repository.getAll();
+
+      expect(result.length, 2);
+      expect(result[0].name, 'India');
+      expect(result[1].name, 'USA');
+      verify(
+        () => mockDb.query(any(that: contains('SELECT')), any()),
+      ).called(1);
+    },
+  );
+
+  test(
+    'getAll() should return an empty list when the table is empty',
+    () async {
+      when(() => mockDb.query(any(), any())).thenAnswer((_) async => []);
+
+      final result = await repository.getAll();
+
+      expect(result, isEmpty);
+      expect(result, isA<List<Country>>());
+    },
+  );
+  test('getAll() should throw an exception if db.query fails', () async {
+    when(() => mockDb.query(any(), any())).thenThrow(Exception());
+
+    expect(repository.getAll(), throwsException);
+  });
 }
