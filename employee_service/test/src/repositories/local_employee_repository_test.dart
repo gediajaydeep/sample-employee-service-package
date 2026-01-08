@@ -1,5 +1,6 @@
 import 'package:employee_service/src/database/database_helper.dart';
 import 'package:employee_service/src/models/employee.dart';
+import 'package:employee_service/src/models/employee_filter.dart';
 import 'package:employee_service/src/repositories/local_employee_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -79,4 +80,65 @@ void main() {
       expect(() => repository.deleteById(1), throwsException);
     },
   );
+
+  test(
+    'getById : should return a joined Employee object when record exists',
+    () async {
+      final mockRow = {
+        'id': 1,
+        'full_name': 'Jaydeep Gedia',
+        'job_title': 'Developer',
+        'salary': 60000.0,
+        'country_id': 101,
+        'country_name': 'India',
+        'tax_rate': 0.15,
+      };
+
+      when(() => mockDb.query(any(), any())).thenAnswer((_) async => [mockRow]);
+
+      final result = await repository.getById(1);
+
+      expect(result, isNotNull);
+      expect(result!.fullName, 'Jaydeep Gedia');
+
+      expect(result.country, isNotNull);
+      expect(result.country!.id, 101);
+      expect(result.country!.name, 'India');
+      expect(result.country!.taxRate, 0.15);
+
+      verify(
+        () => mockDb.query(
+          any(that: allOf(contains('JOIN'), contains('WHERE e.id = ?'))),
+          [1],
+        ),
+      ).called(1);
+    },
+  );
+
+  test('getById should return null when employee does not exist', () async {
+    when(() => mockDb.query(any(), any())).thenAnswer((_) async => []);
+
+    final result = await repository.getById(999);
+
+    expect(result, isNull);
+  });
+
+  test(
+    'getById should throw an Exception if DB returns malformed country data',
+    () async {
+      final malformedRow = {
+        'id': 'abx',
+        'full_name': 'Jaydeep',
+        'country_id': 101,
+        'country_name': null,
+      };
+      when(
+        () => mockDb.query(any(), any()),
+      ).thenAnswer((_) async => [malformedRow]);
+
+      expect(() => repository.getById(1), throwsA(isA<TypeError>()));
+    },
+  );
+  
+
 }
