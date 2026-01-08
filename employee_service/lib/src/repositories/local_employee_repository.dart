@@ -84,9 +84,20 @@ class LocalEmployeeRepository implements EmployeeRepository {
   }
 
   @override
-  Future<int> update(Employee employee) {
-    // TODO: implement update
-    throw UnimplementedError();
+  Future<int> update(Employee employee) async {
+    const sql =
+        '''
+      UPDATE ${DatabaseSchemas.employeesTable} 
+      SET full_name = ?, job_title = ?, salary = ?, country_id = ? 
+      WHERE id = ?
+    ''';
+    return await _db.update(sql, [
+      employee.fullName,
+      employee.jobTitle,
+      employee.salary,
+      employee.countryId,
+      employee.id,
+    ]);
   }
 
   _QueryParts _buildFilterQuery(EmployeeFilter filter) {
