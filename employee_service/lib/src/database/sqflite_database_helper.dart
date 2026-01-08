@@ -63,8 +63,8 @@ class SqliteDatabaseHelper implements DatabaseHelper {
   }
 
   @override
-  Future<int> update(String sql, [List<Object?>? args]) {
-    // TODO: implement update
-    throw UnimplementedError();
+  Future<int> update(String sql, [List<Object?>? args]) async {
+    final db = await _getDb();
+    return await db.rawUpdate(sql, args);
   }
 }
