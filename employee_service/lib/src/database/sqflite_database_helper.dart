@@ -42,9 +42,9 @@ class SqliteDatabaseHelper implements DatabaseHelper {
   }
 
   @override
-  Future<int> delete(String sql, [List<Object?>? args]) {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<int> delete(String sql, [List<Object?>? args]) async {
+    final db = await _getDb();
+    return await db.rawDelete(sql, args);
   }
 
   @override
