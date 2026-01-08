@@ -28,6 +28,9 @@ void main() {
         },
       );
     });
+    tearDown(() {
+      dbHelper.close();
+    });
 
     test('Should create the correct tables on initialization', () async {
       final tables = await dbHelper.query(
