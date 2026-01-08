@@ -6,7 +6,7 @@ abstract class EmployeeRepository {
   Future<int> create(Employee employee);
   Future<Employee?> getById(int id);
   Future<int> update(Employee employee);
-  Future<int> delete(int id);
+  Future<int> deleteById(int id);
 
   Future<List<Employee>> getEmployees(EmployeeFilter filter);
 

@@ -25,9 +25,9 @@ class LocalEmployeeRepository implements EmployeeRepository {
   }
 
   @override
-  Future<int> delete(int id) {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<int> deleteById(int id) async {
+    const sql = 'DELETE FROM ${DatabaseSchemas.employeesTable} WHERE id = ?';
+    return await _db.delete(sql, [id]);
   }
 
   @override
