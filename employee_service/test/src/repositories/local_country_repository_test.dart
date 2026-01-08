@@ -138,4 +138,45 @@ main() {
 
     expect(() => repository.update(country), throwsException);
   });
+
+  test('delete() should return 1 when record is deleted', () async {
+    // Arrange
+    const idToDelete = 1;
+    when(() => mockDb.delete(any(), any())).thenAnswer((_) async => 1);
+
+    // Act
+    final result = await repository.delete(idToDelete);
+
+    // Assert
+    expect(result, 1);
+    verify(
+      () => mockDb.delete(any(that: contains('DELETE FROM countries')), [
+        idToDelete,
+      ]),
+    ).called(1);
+  });
+
+  test(
+    'delete() - Not Found: should return 0 when ID does not exist',
+    () async {
+      const nonExistentId = 999;
+      when(() => mockDb.delete(any(), any())).thenAnswer((_) async => 0);
+
+      final result = await repository.delete(nonExistentId);
+
+      expect(result, 0);
+    },
+  );
+
+  test(
+    'delete() should throw exception throw exception on update error',
+    () async {
+      const linkedCountryId = 1;
+      when(
+        () => mockDb.delete(any(), any()),
+      ).thenThrow(Exception('Database Error: Foreign key constraint failed'));
+
+      expect(() => repository.delete(linkedCountryId), throwsException);
+    },
+  );
 }
