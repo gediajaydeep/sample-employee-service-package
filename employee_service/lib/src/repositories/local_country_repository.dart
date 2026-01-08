@@ -29,9 +29,11 @@ class LocalCountryRepository implements CountryRepository {
   }
 
   @override
-  Future<Country?> getById(int id) {
-    // TODO: implement getById
-    throw UnimplementedError();
+  Future<Country?> getById(int id) async {
+    const sql = 'SELECT * FROM ${DatabaseSchemas.countriesTable} WHERE id = ?';
+    final maps = await _dbHelper.query(sql, [id]);
+    if (maps.isEmpty) return null;
+    return Country.fromJson(maps.first);
   }
 
   @override
