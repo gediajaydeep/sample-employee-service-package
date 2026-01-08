@@ -8,8 +8,8 @@ part of 'country.dart';
 
 Country _$CountryFromJson(Map<String, dynamic> json) => Country(
   id: (json['id'] as num?)?.toInt(),
-  name: json['name'] as String,
-  taxRate: (json['tax_rate'] as num).toDouble(),
+  name: json['name'] as String?,
+  taxRate: (json['tax_rate'] as num?)?.toDouble(),
 );
 
 Map<String, dynamic> _$CountryToJson(Country instance) => <String, dynamic>{
