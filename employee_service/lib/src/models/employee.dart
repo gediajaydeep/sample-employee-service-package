@@ -1,6 +1,8 @@
-// TODO Implement this library.
 import 'package:employee_service/src/models/country.dart';
+import 'package:json_annotation/json_annotation.dart';
+part 'employee.g.dart';
 
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class Employee {
   final int? id;
   final String? fullName;
@@ -18,4 +20,9 @@ class Employee {
     this.countryId,
     this.country,
   });
+
+  factory Employee.fromJson(Map<String, dynamic> json) =>
+      _$EmployeeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EmployeeToJson(this);
 }
