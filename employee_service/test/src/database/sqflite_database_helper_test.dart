@@ -105,5 +105,18 @@ void main() {
         expect(check.first['tax_rate'], 0.15);
       },
     );
+
+    test('DELETE: Should return count of rows deleted', () async {
+      final id = await dbHelper.insert(
+        'INSERT INTO countries (name, tax_rate) VALUES (?, ?)',
+        ['Germany', 0.20],
+      );
+
+      final deleted = await dbHelper.delete(
+        'DELETE FROM countries WHERE id = ?',
+        [id],
+      );
+      expect(deleted, 1);
+    });
   });
 }
