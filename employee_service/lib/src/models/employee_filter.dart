@@ -27,5 +27,15 @@ class EmployeeFilter {
     );
   }
 
+  void byJobTitle(String title) {
+    _conditions.add(
+      QueryCondition(
+        field: 'job_title',
+        operator: QueryOperator.equals,
+        value: title,
+      ),
+    );
+  }
+
   bool get isEmpty => _conditions.isEmpty;
 }
