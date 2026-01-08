@@ -43,4 +43,34 @@ void main() {
       expect(tableNames, contains(DatabaseSchemas.employeesTable));
     });
   });
+
+  group('CRUD Operations', () {
+    late SqliteDatabaseHelper dbHelper;
+    setUp(() {
+      dbHelper = SqliteDatabaseHelper(
+        databasePath: dbName,
+        onCreate: (db, version) async {
+          await db.execute(DatabaseSchemas.createCountriesTable);
+          await db.execute(DatabaseSchemas.createEmployeesTable);
+        },
+      );
+    });
+    tearDown(() {
+      dbHelper.close();
+    });
+    test(
+      'INSERT: Should respect positional arguments and return auto-increment ID',
+      () async {
+        const countryName = 'India';
+        const taxRate = 0.10;
+
+        final id = await dbHelper.insert(
+          'INSERT INTO countries (name, tax_rate) VALUES (?, ?)',
+          [countryName, taxRate],
+        );
+
+        expect(id, 1);
+      },
+    );
+  });
 }
