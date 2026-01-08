@@ -332,4 +332,66 @@ void main() {
       },
     );
   });
+
+  group('update', () {
+    final tEmployee = Employee(
+      id: 1,
+      fullName: 'Jaydeep Gedia',
+      jobTitle: 'Lead Developer',
+      salary: 95000.0,
+      countryId: 5,
+    );
+
+    test(
+      'should call db.update with correct SQL and positional arguments',
+      () async {
+        when(() => mockDb.update(any(), any())).thenAnswer((_) async => 1);
+
+        final result = await repository.update(tEmployee);
+
+        expect(result, 1);
+
+        verify(
+          () => mockDb.update(
+            any(
+              that: allOf([
+                contains('UPDATE employees'),
+                contains('SET'),
+                contains('WHERE id = ?'),
+              ]),
+            ),
+            [
+              tEmployee.fullName,
+              tEmployee.jobTitle,
+              tEmployee.salary,
+              tEmployee.countryId,
+              tEmployee.id,
+            ],
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'should return 0 when the employee ID does not exist in database',
+      () async {
+        when(() => mockDb.update(any(), any())).thenAnswer((_) async => 0);
+
+        final result = await repository.update(tEmployee);
+
+        expect(result, 0);
+      },
+    );
+
+    test(
+      'should throw an exception when update fails due to constraint violation',
+      () async {
+        when(
+          () => mockDb.update(any(), any()),
+        ).thenThrow(Exception('Database Error: Foreign Key Constraint failed'));
+
+        expect(() => repository.update(tEmployee), throwsException);
+      },
+    );
+  });
 }
