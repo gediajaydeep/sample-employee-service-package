@@ -22,7 +22,7 @@ void main() {
   );
 
   test(
-    'should call db.insert with correct SQL and arguments and return id when success',
+    'create : should call db.insert with correct SQL and arguments and return id when success',
     () async {
       when(() => mockDb.insert(any(), any())).thenAnswer((_) async => 1);
 
@@ -41,11 +41,42 @@ void main() {
     },
   );
 
-  test('should throw an exception when database insert fails', () async {
-    when(
-      () => mockDb.insert(any(), any()),
-    ).thenThrow(Exception('Database Write Error'));
+  test(
+    'create : should throw an exception when database insert fails',
+    () async {
+      when(
+        () => mockDb.insert(any(), any()),
+      ).thenThrow(Exception('Database Write Error'));
 
-    expect(() => repository.create(tEmployee), throwsException);
-  });
+      expect(() => repository.create(tEmployee), throwsException);
+    },
+  );
+
+  test(
+    'deleteById : should call db.delete with correct SQL and ID and return count of deleted employee',
+    () async {
+      const idToDelete = 42;
+      when(() => mockDb.delete(any(), any())).thenAnswer((_) async => 1);
+
+      final result = await repository.deleteById(idToDelete);
+
+      expect(result, 1);
+      verify(
+        () => mockDb.delete(any(that: contains('DELETE FROM employees')), [
+          idToDelete,
+        ]),
+      ).called(1);
+    },
+  );
+
+  test(
+    'deleteById : should throw an exception if deletion fails due to DB error',
+    () async {
+      when(
+        () => mockDb.delete(any(), any()),
+      ).thenThrow(Exception('Database Error: Disk I/O failure'));
+
+      expect(() => repository.deleteById(1), throwsException);
+    },
+  );
 }
