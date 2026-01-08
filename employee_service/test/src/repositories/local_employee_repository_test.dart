@@ -1,5 +1,6 @@
 import 'package:employee_service/src/database/database_helper.dart';
 import 'package:employee_service/src/models/employee.dart';
+import 'package:employee_service/src/repositories/local_employee_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
