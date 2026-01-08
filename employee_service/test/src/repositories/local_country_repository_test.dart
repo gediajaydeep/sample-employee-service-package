@@ -48,7 +48,18 @@ main() {
   );
 
   test(
-    'getById() should use db.query and throw an exception if record does not exist',
+    'getById() should use db.query should return null if record does not exist',
+    () async {
+      when(() => mockDb.query(any(), any())).thenAnswer((_) async => []);
+
+      final result = await repository.getById(99);
+
+      expect(result, isNull);
+    },
+  );
+
+  test(
+    'getById() should use db.query and throw an exception if db.query exception',
     () async {
       when(() => mockDb.query(any(), any())).thenThrow(Exception());
 
@@ -58,4 +69,6 @@ main() {
       ).called(1);
     },
   );
+
+  
 }
