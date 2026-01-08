@@ -56,9 +56,12 @@ class LocalEmployeeRepository implements EmployeeRepository {
   }
 
   @override
-  Future<List<Employee>> getEmployees(EmployeeFilter filter) {
-    // TODO: implement getEmployees
-    throw UnimplementedError();
+  Future<List<Employee>> getEmployees(EmployeeFilter filter) async {
+    final queryData = _buildFilterQuery(filter);
+    final sql = '$_baseJoinQuery${queryData.whereClause}';
+
+    final results = await _db.query(sql, queryData.args);
+    return results.map((row) => _mapRowToEmployee(row)).toList();
   }
 
   @override
@@ -72,4 +75,26 @@ class LocalEmployeeRepository implements EmployeeRepository {
     // TODO: implement update
     throw UnimplementedError();
   }
+
+  _QueryParts _buildFilterQuery(EmployeeFilter filter) {
+    if (filter.isEmpty) return _QueryParts('', []);
+
+    final conditions = <String>[];
+    final args = <dynamic>[];
+
+    for (final condition in filter.conditions) {
+      if (condition.operator == QueryOperator.equals) {
+        conditions.add('e.${condition.field} = ?');
+        args.add(condition.value);
+      }
+    }
+
+    return _QueryParts(' WHERE ${conditions.join(' AND ')}', args);
+  }
+}
+
+class _QueryParts {
+  final String whereClause;
+  final List<dynamic> args;
+  _QueryParts(this.whereClause, this.args);
 }
