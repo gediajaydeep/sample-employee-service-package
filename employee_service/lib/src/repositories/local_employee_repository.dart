@@ -65,9 +65,22 @@ class LocalEmployeeRepository implements EmployeeRepository {
   }
 
   @override
-  Future<SalaryMetrics> getMetrics(EmployeeFilter filter) {
-    // TODO: implement getMetrics
-    throw UnimplementedError();
+  Future<SalaryMetrics> getMetrics(EmployeeFilter filter) async {
+    final queryData = _buildFilterQuery(filter);
+
+    final sql =
+        '''
+      SELECT 
+        AVG(salary) as average_salary, 
+        MIN(salary) as min_salary, 
+        MAX(salary) as max_salary, 
+        COUNT(*) as total_employees 
+      FROM ${DatabaseSchemas.employeesTable} e
+      ${queryData.whereClause}
+    ''';
+
+    final results = await _db.query(sql, queryData.args);
+    return SalaryMetrics.fromJson(results.first);
   }
 
   @override
