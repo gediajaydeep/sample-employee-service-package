@@ -118,5 +118,23 @@ void main() {
       );
       expect(deleted, 1);
     });
+
+    test(
+      'VALIDATION: Should throw exception on UNIQUE constraint violation',
+      () async {
+        await dbHelper.insert(
+          'INSERT INTO countries (name, tax_rate) VALUES (?, ?)',
+          ['France', 0.18],
+        );
+
+        expect(
+          () => dbHelper.insert(
+            'INSERT INTO countries (name, tax_rate) VALUES (?, ?)',
+            ['France', 0.25],
+          ),
+          throwsException,
+        );
+      },
+    );
   });
 }
