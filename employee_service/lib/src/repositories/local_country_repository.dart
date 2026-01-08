@@ -38,8 +38,13 @@ class LocalCountryRepository implements CountryRepository {
   }
 
   @override
-  Future<int> update(Country country) {
-    // TODO: implement update
-    throw UnimplementedError();
+  Future<int> update(Country country) async {
+    const sql =
+        'UPDATE ${DatabaseSchemas.countriesTable} SET name = ?, tax_rate = ? WHERE id = ?';
+    return await _dbHelper.update(sql, [
+      country.name,
+      country.taxRate,
+      country.id,
+    ]);
   }
 }
