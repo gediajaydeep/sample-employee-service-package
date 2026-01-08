@@ -17,9 +17,9 @@ class LocalCountryRepository implements CountryRepository {
   }
 
   @override
-  Future<int> delete(int id) {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<int> delete(int id) async {
+    const sql = 'DELETE FROM ${DatabaseSchemas.countriesTable} WHERE id = ?';
+    return await _dbHelper.delete(sql, [id]);
   }
 
   @override
