@@ -48,9 +48,9 @@ class SqliteDatabaseHelper implements DatabaseHelper {
   }
 
   @override
-  Future<int> insert(String sql, [List<Object?>? args]) {
-    // TODO: implement insert
-    throw UnimplementedError();
+  Future<int> insert(String sql, [List<Object?>? args]) async {
+    final db = await _getDb();
+    return await db.rawInsert(sql, args);
   }
 
   @override
