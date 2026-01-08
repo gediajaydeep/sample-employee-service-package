@@ -139,6 +139,106 @@ void main() {
       expect(() => repository.getById(1), throwsA(isA<TypeError>()));
     },
   );
-  
 
+  group('getEmployees', () {
+    final mockDbRows = [
+      {
+        'id': 1,
+        'full_name': 'Jaydeep Gedia',
+        'job_title': 'Developer',
+        'salary': 60000.0,
+        'country_id': 10,
+        'country_name': 'India',
+        'tax_rate': 0.15,
+      },
+      {
+        'id': 2,
+        'full_name': 'John Doe',
+        'job_title': 'Manager',
+        'salary': 80000.0,
+        'country_id': 11,
+        'country_name': 'USA',
+        'tax_rate': 0.20,
+      },
+    ];
+    test(
+      'getEmployees should return a list of nested Employee objects with correct mapping',
+      () async {
+        final filter = EmployeeFilter();
+        when(
+          () => mockDb.query(any(), any()),
+        ).thenAnswer((_) async => mockDbRows);
+
+        final result = await repository.getEmployees(filter);
+
+        expect(result.length, 2);
+
+        expect(result[0].fullName, 'Jaydeep Gedia');
+        expect(result[0].country, isNotNull);
+        expect(result[0].country!.name, 'India');
+        expect(result[0].country!.taxRate, 0.15);
+
+        expect(result[1].fullName, 'John Doe');
+        expect(result[1].country!.name, 'USA');
+
+        verify(
+          () => mockDb.query(
+            any(
+              that: allOf([contains('INNER JOIN'), isNot(contains('WHERE'))]),
+            ),
+            [], // Arguments list must be empty
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'getEmployees should return an empty list when database returns no results',
+      () async {
+        when(() => mockDb.query(any(), any())).thenAnswer((_) async => []);
+
+        final result = await repository.getEmployees(EmployeeFilter());
+
+        expect(result, isA<List<Employee>>());
+        expect(result, isEmpty);
+      },
+    );
+
+    test(
+      'getEmployees should handle partial filters and still map correctly',
+      () async {
+        final filter = EmployeeFilter()..byJobTitle('Developer');
+        when(
+          () => mockDb.query(any(), any()),
+        ).thenAnswer((_) async => [mockDbRows.first]);
+
+        final result = await repository.getEmployees(filter);
+
+        expect(result.length, 1);
+        expect(result.first.jobTitle, 'Developer');
+        verify(
+          () => mockDb.query(any(that: contains('WHERE e.job_title = ?')), [
+            'Developer',
+          ]),
+        ).called(1);
+      },
+    );
+
+    test(
+      'getEmployees should throw a TypeError if DB rows are missing joined country data',
+      () async {
+        final brokenRows = [
+          {'id': 'ass', 'full_name': 'Broken Row', 'country_id': 10},
+        ];
+        when(
+          () => mockDb.query(any(), any()),
+        ).thenAnswer((_) async => brokenRows);
+
+        expect(
+          () => repository.getEmployees(EmployeeFilter()),
+          throwsA(isA<TypeError>()),
+        );
+      },
+    );
+  });
 }
