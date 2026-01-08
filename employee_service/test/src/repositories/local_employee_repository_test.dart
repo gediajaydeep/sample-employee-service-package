@@ -246,4 +246,90 @@ void main() {
       },
     );
   });
+
+  group('getMetrics', () {
+    test(
+      'getMetrics should return SalaryMetrics with correct aggregates and NO WHERE clause when filter is empty',
+      () async {
+        final emptyFilter = EmployeeFilter();
+        final mockMetricsRow = {
+          'average_salary': 50000.0,
+          'min_salary': 20000.0,
+          'max_salary': 80000.0,
+          'total_employees': 5,
+        };
+
+        when(
+          () => mockDb.query(any(), any()),
+        ).thenAnswer((_) async => [mockMetricsRow]);
+
+        final result = await repository.getMetrics(emptyFilter);
+
+        expect(result.averageSalary, 50000.0);
+        expect(result.totalEmployees, 5);
+
+        verify(
+          () => mockDb.query(
+            any(
+              that: allOf([
+                contains('AVG(salary)'),
+                contains('COUNT(*)'),
+                isNot(contains('WHERE')),
+              ]),
+            ),
+            [],
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'getMetrics should apply WHERE clause to metrics when filter is provided',
+      () async {
+        final filter = EmployeeFilter()..byCountryId(10);
+        when(() => mockDb.query(any(), any())).thenAnswer(
+          (_) async => [
+            {
+              'average_salary': 60000.0,
+              'min_salary': 60000.0,
+              'max_salary': 60000.0,
+              'total_employees': 1,
+            },
+          ],
+        );
+
+        await repository.getMetrics(filter);
+
+        verify(
+          () =>
+              mockDb.query(any(that: contains('WHERE e.country_id = ?')), [10]),
+        ).called(1);
+      },
+    );
+    test(
+      'getMetrics should handle empty result set by returning zeroed metrics (or throwing depending on implementation)',
+      () async {
+        when(() => mockDb.query(any(), any())).thenAnswer((_) async => []);
+
+        expect(() => repository.getMetrics(EmployeeFilter()), throwsStateError);
+      },
+    );
+    test(
+      'getMetrics should throw a TypeError if aggregate result is missing expected columns',
+      () async {
+        final incompleteRow = {'min_salary': 1000.0, 'total_employees': 1};
+
+        when(
+          () => mockDb.query(any(), any()),
+        ).thenAnswer((_) async => [incompleteRow]);
+
+        expect(
+          () => repository.getMetrics(EmployeeFilter()),
+          throwsA(isA<TypeError>()),
+          reason:
+              'Should throw TypeError if fromJson mapping fails due to missing keys',
+        );
+      },
+    );
+  });
 }
