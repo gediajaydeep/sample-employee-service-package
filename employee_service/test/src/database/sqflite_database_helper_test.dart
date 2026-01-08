@@ -46,7 +46,10 @@ void main() {
 
   group('CRUD Operations', () {
     late SqliteDatabaseHelper dbHelper;
-    setUp(() {
+    setUp(() async {
+      if (await databaseFactory.databaseExists(dbName)) {
+        await databaseFactory.deleteDatabase(dbName);
+      }
       dbHelper = SqliteDatabaseHelper(
         databasePath: dbName,
         onCreate: (db, version) async {
@@ -72,5 +75,13 @@ void main() {
         expect(id, 1);
       },
     );
+
+    test('QUERY: Should return empty list if no records match', () async {
+      final result = await dbHelper.query(
+        'SELECT * FROM countries WHERE id = ?',
+        [99],
+      );
+      expect(result, isEmpty);
+    });
   });
 }
