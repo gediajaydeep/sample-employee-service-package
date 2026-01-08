@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'salary_metrics.g.dart';
+
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class SalaryMetrics {
   final double averageSalary;
   final double minSalary;
@@ -10,4 +15,7 @@ class SalaryMetrics {
     required this.maxSalary,
     required this.totalEmployees,
   });
+
+  factory SalaryMetrics.fromJson(Map<String, dynamic> json) =>
+      _$SalaryMetricsFromJson(json);
 }
