@@ -31,9 +31,28 @@ class LocalEmployeeRepository implements EmployeeRepository {
   }
 
   @override
-  Future<Employee?> getById(int id) {
-    // TODO: implement getById
-    throw UnimplementedError();
+  Future<Employee?> getById(int id) async {
+    final sql = '$_baseJoinQuery WHERE e.id = ?';
+    final results = await _db.query(sql, [id]);
+    if (results.isEmpty) return null;
+    return _mapRowToEmployee(results.first);
+  }
+
+  String get _baseJoinQuery =>
+      '''
+    SELECT e.*, c.name as country_name, c.tax_rate 
+    FROM ${DatabaseSchemas.employeesTable} e
+    INNER JOIN ${DatabaseSchemas.countriesTable} c ON e.country_id = c.id
+  ''';
+
+  Employee _mapRowToEmployee(Map<String, dynamic> row) {
+    final map = Map<String, dynamic>.from(row);
+    map['country'] = {
+      'id': row['country_id'],
+      'name': row['country_name'],
+      'tax_rate': row['tax_rate'],
+    };
+    return Employee.fromJson(map);
   }
 
   @override
