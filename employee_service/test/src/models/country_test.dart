@@ -3,25 +3,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-    test('Country model should be initializable with name and tax rate', () {
-    final country = Country(name: 'India', taxRate: 0.10);
-    
+  test('Country model should be initializable with name and tax rate', () {
+    final country = Country(id: 1, name: 'India', taxRate: 0.10);
+
+    expect(country.id, 1);
     expect(country.name, 'India');
     expect(country.taxRate, 0.10);
   });
 
-  test('Country model should convert to/from JSON correctly',
-  (){
-    final json = {
-      'id' : 1,
-      'name' : 'India',
-      'tax_rate' : 0.10
-    };
+  test('Country model should convert to/from JSON correctly', () {
+    final json = {'id': 1, 'name': 'India', 'tax_rate': 0.10};
     final country = Country.fromJson(json);
     expect(country.name, equals(json['name']));
-        expect(country.id, equals(json['id']));
+    expect(country.id, equals(json['id']));
     expect(country.taxRate, equals(json['tax_rate']));
 
-    expect(mapEquals(country.toJson(), json), isTrue) ;
+    expect(mapEquals(country.toJson(), json), isTrue);
   });
 }
