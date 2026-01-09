@@ -1,4 +1,5 @@
 import 'package:employee_service/src/models/country.dart';
+import 'package:employee_service/src/models/salary_metrics.dart';
 
 import '../repositories/employee_repository.dart';
 import '../repositories/country_repository.dart';
@@ -21,6 +22,7 @@ abstract class EmployeeService {
   Future<List<Country>> getCountries();
   Future<int> createCountry(Country country);
   Future<double> getEmployeeNetSalaryById(int id);
+  Future<SalaryMetrics> getSalaryStats({EmployeeFilter? filter});
 }
 
 class _EmployeeServiceImpl implements EmployeeService {
@@ -134,5 +136,10 @@ class _EmployeeServiceImpl implements EmployeeService {
     }
 
     return employee.netSalary;
+  }
+
+  @override
+  Future<SalaryMetrics> getSalaryStats({EmployeeFilter? filter}) {
+    return _employeeRepo.getMetrics(filter ?? EmployeeFilter());
   }
 }
