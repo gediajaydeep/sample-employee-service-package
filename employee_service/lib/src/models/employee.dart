@@ -24,5 +24,9 @@ class Employee {
   factory Employee.fromJson(Map<String, dynamic> json) =>
       _$EmployeeFromJson(json);
 
+  double get netSalary => (salary ?? 0) * (1 - (country?.taxRate ?? 0));
+
+  double get taxAmount => (salary ?? 0) * (country?.taxRate ?? 0);
+
   Map<String, dynamic> toJson() => _$EmployeeToJson(this);
 }
