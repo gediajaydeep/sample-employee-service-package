@@ -586,4 +586,67 @@ void main() {
       );
     });
   });
+
+  group('EmployeeService - getEmployeeNetSalaryById', () {
+    test(
+      'should return 9000.0 for an Indian employee with 10000.0 gross',
+      () async {
+        // Arrange
+        final tEmployee = Employee(
+          id: 1,
+          fullName: 'Rahul',
+          jobTitle: 'Dev',
+          salary: 10000.0,
+          countryId: 1,
+          country: Country(id: 1, name: 'India', taxRate: 0.10),
+        );
+
+        when(
+          () => mockEmployeeRepo.getById(1),
+        ).thenAnswer((_) async => tEmployee);
+
+        final result = await service.getEmployeeNetSalaryById(1);
+
+        expect(result, 9000.0);
+      },
+    );
+
+    test('should return 8800.0 for a US employee with 10000.0 gross', () async {
+      final tEmployee = Employee(
+        id: 2,
+        fullName: 'John',
+        jobTitle: 'Dev',
+        salary: 10000.0,
+        countryId: 2,
+        country: Country(id: 2, name: 'United States', taxRate: 0.12),
+      );
+      when(
+        () => mockEmployeeRepo.getById(2),
+      ).thenAnswer((_) async => tEmployee);
+
+      final result = await service.getEmployeeNetSalaryById(2);
+
+      expect(result, 8800.0);
+    });
+    test(
+      'should return 10000 for a Japan employee with 10000.0 gross',
+      () async {
+        final tEmployee = Employee(
+          id: 2,
+          fullName: 'John',
+          jobTitle: 'Dev',
+          salary: 10000.0,
+          countryId: 3,
+          country: Country(id: 3, name: 'Japan', taxRate: 0),
+        );
+        when(
+          () => mockEmployeeRepo.getById(2),
+        ).thenAnswer((_) async => tEmployee);
+
+        final result = await service.getEmployeeNetSalaryById(2);
+
+        expect(result, 10000.0);
+      },
+    );
+  });
 }
