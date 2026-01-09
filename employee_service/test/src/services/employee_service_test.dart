@@ -297,5 +297,98 @@ void main() {
         );
       },
     );
+
+    group('Validations', () {
+      test(
+        'should throw "Employee ID is required for updates." if id is null',
+        () async {
+          final invalid = Employee(id: null);
+
+          expect(
+            () => service.updateEmployee(invalid),
+            throwsA(
+              isA<ArgumentError>().having(
+                (e) => e.message,
+                'message',
+                'Employee ID is required for updates.',
+              ),
+            ),
+          );
+          verifyNever(() => mockEmployeeRepo.update(any()));
+        },
+      );
+
+      test(
+        'should throw "Full name can not be empty." if fullName is blank after trim',
+        () async {
+          final invalid = Employee(id: 1, fullName: '   ');
+
+          expect(
+            () => service.updateEmployee(invalid),
+            throwsA(
+              isA<ArgumentError>().having(
+                (e) => e.message,
+                'message',
+                'Full name can not be empty.',
+              ),
+            ),
+          );
+        },
+      );
+
+      test(
+        'should throw "JobTitle can not be empty." if jobTitle is blank',
+        () async {
+          final invalid = Employee(id: 1, jobTitle: ' ');
+
+          expect(
+            () => service.updateEmployee(invalid),
+            throwsA(
+              isA<ArgumentError>().having(
+                (e) => e.message,
+                'message',
+                'JobTitle name can not be empty.',
+              ),
+            ),
+          );
+        },
+      );
+
+      test(
+        'should throw "Salary must be greater than zero." if salary is 0 or less',
+        () async {
+          final invalid = Employee(id: 1, salary: -10);
+
+          expect(
+            () => service.updateEmployee(invalid),
+            throwsA(
+              isA<ArgumentError>().having(
+                (e) => e.message,
+                'message',
+                'Salary must be greater than zero.',
+              ),
+            ),
+          );
+        },
+      );
+
+      test(
+        'should throw "A valid country id is required." if countryId is invalid',
+        () async {
+          final invalid = Employee(id: 1, countryId: 0);
+
+          expect(
+            () => service.updateEmployee(invalid),
+            throwsA(
+              isA<ArgumentError>().having(
+                (e) => e.message,
+                'message',
+                'A valid country id is required.',
+              ),
+            ),
+          );
+        },
+      );
+    });
   });
 }
