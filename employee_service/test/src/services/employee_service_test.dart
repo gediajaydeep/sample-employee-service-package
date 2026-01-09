@@ -444,4 +444,50 @@ void main() {
       },
     );
   });
+
+  group('EmployeeService - getCountries', () {
+    final tCountries = [
+      Country(id: 1, name: 'India', taxRate: 0.10),
+      Country(id: 2, name: 'United States', taxRate: 0.12),
+    ];
+
+    test(
+      'should return a list of countries when repository call is successful',
+      () async {
+        when(
+          () => mockCountryRepo.getAll(),
+        ).thenAnswer((_) async => tCountries);
+
+        final result = await service.getCountries();
+
+        expect(result, equals(tCountries));
+        expect(result.length, 2);
+        expect(result.first.name, 'India');
+        verify(() => mockCountryRepo.getAll()).called(1);
+      },
+    );
+
+    test(
+      'should return an empty list when no countries exist in the database',
+      () async {
+        when(() => mockCountryRepo.getAll()).thenAnswer((_) async => []);
+
+        final result = await service.getCountries();
+
+        expect(result, isEmpty);
+        verify(() => mockCountryRepo.getAll()).called(1);
+      },
+    );
+
+    test(
+      'should propagate exceptions when the country repository fails',
+      () async {
+        when(
+          () => mockCountryRepo.getAll(),
+        ).thenThrow(Exception('Database error while fetching countries'));
+
+        expect(() => service.getCountries(), throwsA(isA<Exception>()));
+      },
+    );
+  });
 }
