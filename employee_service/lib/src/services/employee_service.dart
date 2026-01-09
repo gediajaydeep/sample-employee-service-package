@@ -54,7 +54,13 @@ class _EmployeeServiceImpl implements EmployeeService {
   }
 
   @override
-  Future<void> updateEmployee(Employee employee) {
-    return _employeeRepo.update(employee);
+  Future<void> updateEmployee(Employee employee) async {
+    final affectedRows = await _employeeRepo.update(employee);
+
+    if (affectedRows == 0) {
+      throw StateError(
+        'Update failed: No employee found with ID ${employee.id}.',
+      );
+    }
   }
 }
