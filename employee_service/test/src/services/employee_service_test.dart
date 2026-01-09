@@ -519,5 +519,71 @@ void main() {
         );
       },
     );
+    group('Validations', () {
+      test(
+        'should throw "Country name is required." if name is null or blank',
+        () async {
+          final invalid = Country(name: '', taxRate: 0.1);
+
+          expect(
+            () => service.createCountry(invalid),
+            throwsA(
+              isA<ArgumentError>().having(
+                (e) => e.message,
+                'message',
+                'Country name is required.',
+              ),
+            ),
+          );
+          verifyNever(() => mockCountryRepo.create(any()));
+        },
+      );
+
+      test('should throw "Tax Rate is required." if taxRate is null', () async {
+        // Note: This assumes your Country model allows null taxRate
+        final invalid = Country(name: 'New Zealand', taxRate: null);
+
+        expect(
+          () => service.createCountry(invalid),
+          throwsA(
+            isA<ArgumentError>().having(
+              (e) => e.message,
+              'message',
+              'Tax Rate is required.',
+            ),
+          ),
+        );
+      });
+
+      test(
+        'should throw specific message if taxRate is out of range',
+        () async {
+          final invalidHigh = Country(name: 'HighTax', taxRate: 1.1); // 110%
+          final invalidLow = Country(name: 'LowTax', taxRate: -0.01); // -1%
+
+          expect(
+            () => service.createCountry(invalidHigh),
+            throwsA(
+              isA<ArgumentError>().having(
+                (e) => e.message,
+                'message',
+                'Tax rate must be between 0.0 and 1.0 (e.g., 0.15 for 15%).',
+              ),
+            ),
+          );
+
+          expect(
+            () => service.createCountry(invalidLow),
+            throwsA(
+              isA<ArgumentError>().having(
+                (e) => e.message,
+                'message',
+                'Tax rate must be between 0.0 and 1.0 (e.g., 0.15 for 15%).',
+              ),
+            ),
+          );
+        },
+      );
+    });
   });
 }
