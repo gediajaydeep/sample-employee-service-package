@@ -372,6 +372,33 @@ void main() {
     );
 
     test(
+      'should call db.update with correct SQL and positional arguments when only some fields are passed',
+      () async {
+        when(() => mockDb.update(any(), any())).thenAnswer((_) async => 1);
+
+        final result = await repository.update(
+          Employee(id: 2, fullName: 'New Name'),
+        );
+
+        expect(result, 1);
+
+        verify(
+          () => mockDb.update(
+            any(
+              that: allOf([
+                contains('UPDATE employees'),
+                contains('SET'),
+                isNot(contains('salary')),
+                contains('WHERE id = ?'),
+              ]),
+            ),
+            ['New Name', 2],
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
       'should return 0 when the employee ID does not exist in database',
       () async {
         when(() => mockDb.update(any(), any())).thenAnswer((_) async => 0);
