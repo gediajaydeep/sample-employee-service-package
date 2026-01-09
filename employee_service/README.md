@@ -94,5 +94,5 @@ This project was developed through a high-fidelity collaboration between the lea
 
 
 
-> **P.S.** This README was also written by AI :P 🤖✨
+> **P.S.** This README was also also written by AI :P 🤖✨
 
