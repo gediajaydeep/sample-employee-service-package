@@ -105,6 +105,18 @@ class _EmployeeServiceImpl implements EmployeeService {
 
   @override
   Future<int> createCountry(Country country) {
+    if (country.name?.trim().isEmpty ?? true) {
+      throw ArgumentError('Country name is required.');
+    }
+    if (country.taxRate == null) {
+      throw ArgumentError('Tax Rate is required.');
+    }
+    if (country.taxRate! < 0 || country.taxRate! > 1.0) {
+      throw ArgumentError(
+        'Tax rate must be between 0.0 and 1.0 (e.g., 0.15 for 15%).',
+      );
+    }
+
     return _countryRepo.create(country);
   }
 }
