@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 
 class MockDatabaseHelper extends Mock implements DatabaseHelper {}
 
-main() {
+void main() {
   late MockDatabaseHelper mockDb;
   late LocalCountryRepository repository;
   setUp(() {
