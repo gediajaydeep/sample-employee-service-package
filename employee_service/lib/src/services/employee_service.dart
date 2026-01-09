@@ -29,6 +29,26 @@ class _EmployeeServiceImpl implements EmployeeService {
   Future<Employee?> getEmployeeById(int id) => _employeeRepo.getById(id);
 
   @override
-  Future<int> createEmployee(Employee employee) =>
-      _employeeRepo.create(employee);
+  Future<int> createEmployee(Employee employee) {
+    _validateEmployee(employee);
+    return _employeeRepo.create(employee);
+  }
+
+  void _validateEmployee(Employee employee) {
+    if (employee.fullName?.trim().isEmpty ?? true) {
+      throw ArgumentError('Full name is required.');
+    }
+    if (employee.jobTitle?.trim().isEmpty ?? true) {
+      throw ArgumentError('Job title is required.');
+    }
+    if (employee.salary == null) {
+      throw ArgumentError('Salary is required.');
+    }
+    if (employee.salary! <= 0) {
+      throw ArgumentError('Salary must be greater than zero.');
+    }
+    if (employee.countryId == null || employee.countryId! <= 0) {
+      throw ArgumentError('A valid country id is required.');
+    }
+  }
 }
