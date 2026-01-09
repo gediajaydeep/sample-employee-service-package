@@ -1,3 +1,5 @@
+import 'package:employee_service/src/models/country.dart';
+
 import '../repositories/employee_repository.dart';
 import '../repositories/country_repository.dart';
 import '../models/employee.dart';
@@ -15,6 +17,7 @@ abstract class EmployeeService {
   Future<int> createEmployee(Employee employee);
   Future<void> updateEmployee(Employee employee);
   Future<void> deleteEmployee(int id);
+  Future<List<Country>> getCountries();
 }
 
 class _EmployeeServiceImpl implements EmployeeService {
@@ -94,4 +97,7 @@ class _EmployeeServiceImpl implements EmployeeService {
       throw StateError('Delete failed: No employee found with ID $id.');
     }
   }
+
+  @override
+  Future<List<Country>> getCountries() => _countryRepo.getAll();
 }
