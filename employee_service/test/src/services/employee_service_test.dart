@@ -648,5 +648,13 @@ void main() {
         expect(result, 10000.0);
       },
     );
+    test('should throw StateError if the Employee does not exist', () async {
+      when(() => mockEmployeeRepo.getById(any())).thenAnswer((_) async => null);
+
+      expect(
+        () => service.getEmployeeNetSalaryById(999),
+        throwsA(isA<StateError>()),
+      );
+    });
   });
 }
