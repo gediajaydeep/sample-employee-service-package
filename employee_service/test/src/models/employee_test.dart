@@ -50,4 +50,44 @@ void main() {
 
     expect(DeepCollectionEquality().equals(employee.toJson(), json), isTrue);
   });
+
+  group('Employee Model - Salary Calculations', () {
+    
+    test('netSalary should return 900 when gross is 1000 and tax is 10%', () {
+      final employee = Employee(
+        fullName: 'Jaydeep',
+        jobTitle: 'Dev',
+        salary: 1000.0,
+        countryId: 1,
+        country: Country(id: 1, name: 'Test', taxRate: 0.10),
+      );
+
+      expect(employee.netSalary, 900.0);
+      expect(employee.taxAmount, 100.0);
+    });
+
+    test('netSalary should return gross salary if country is null', () {
+      final employee = Employee(
+        fullName: 'Jaydeep',
+        jobTitle: 'Dev',
+        salary: 1000.0,
+        countryId: 1,
+        country: null, 
+      );
+
+      expect(employee.netSalary, 1000.0);
+    });
+
+    test('netSalary should handle 0% tax correctly', () {
+      final employee = Employee(
+        fullName: 'Jaydeep',
+        jobTitle: 'Dev',
+        salary: 5000.0,
+        countryId: 1,
+        country: Country(id: 1, name: 'Dubai', taxRate: 0.0),
+      );
+
+      expect(employee.netSalary, 5000.0);
+    });
+  });
 }
