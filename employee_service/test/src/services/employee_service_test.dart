@@ -279,5 +279,23 @@ void main() {
 
       verify(() => mockEmployeeRepo.update(tValidEmployee)).called(1);
     });
+
+    test(
+      'should throw StateError when repository returns 0 (ID not found)',
+      () async {
+        when(() => mockEmployeeRepo.update(any())).thenAnswer((_) async => 0);
+
+        expect(
+          () => service.updateEmployee(tValidEmployee),
+          throwsA(
+            isA<StateError>().having(
+              (e) => e.message,
+              'message',
+              contains('No employee found with ID 1'),
+            ),
+          ),
+        );
+      },
+    );
   });
 }
