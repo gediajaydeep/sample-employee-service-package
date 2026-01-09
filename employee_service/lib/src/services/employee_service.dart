@@ -55,12 +55,30 @@ class _EmployeeServiceImpl implements EmployeeService {
 
   @override
   Future<void> updateEmployee(Employee employee) async {
+    _validateEmployeeUpdate(employee);
     final affectedRows = await _employeeRepo.update(employee);
-
     if (affectedRows == 0) {
       throw StateError(
         'Update failed: No employee found with ID ${employee.id}.',
       );
+    }
+  }
+
+  void _validateEmployeeUpdate(Employee employee) {
+    if (employee.id == null || employee.id! <= 0) {
+      throw ArgumentError('Employee ID is required for updates.');
+    }
+    if (employee.fullName != null && employee.fullName!.trim().isEmpty) {
+      throw ArgumentError('Full name can not be empty.');
+    }
+    if (employee.jobTitle != null && employee.jobTitle!.trim().isEmpty) {
+      throw ArgumentError('JobTitle name can not be empty.');
+    }
+    if (employee.salary != null && employee.salary! <= 0) {
+      throw ArgumentError('Salary must be greater than zero.');
+    }
+    if (employee.countryId != null && employee.countryId! <= 0) {
+      throw ArgumentError('A valid country id is required.');
     }
   }
 }
