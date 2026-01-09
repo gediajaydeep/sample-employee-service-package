@@ -1,5 +1,8 @@
+import 'package:employee_service/src/database/database_helper.dart';
 import 'package:employee_service/src/models/country.dart';
 import 'package:employee_service/src/models/salary_metrics.dart';
+import 'package:employee_service/src/repositories/local_country_repository.dart';
+import 'package:employee_service/src/repositories/local_employee_repository.dart';
 
 import '../repositories/employee_repository.dart';
 import '../repositories/country_repository.dart';
@@ -8,10 +11,14 @@ import '../models/employee_filter.dart';
 
 abstract class EmployeeService {
   factory EmployeeService({
-    required EmployeeRepository employeeRepo,
-    required CountryRepository countryRepo,
+    EmployeeRepository? employeeRepo,
+    CountryRepository? countryRepo,
   }) {
-    return _EmployeeServiceImpl(employeeRepo, countryRepo);
+    final dbHelper = DatabaseHelper.defaultSQL();
+    return _EmployeeServiceImpl(
+      employeeRepo ?? LocalEmployeeRepository(dbHelper),
+      countryRepo ?? LocalCountryRepository(dbHelper),
+    );
   }
   Future<List<Employee>> getEmployees(EmployeeFilter filter);
   Future<Employee?> getEmployeeById(int id);
