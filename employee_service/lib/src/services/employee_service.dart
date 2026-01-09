@@ -124,6 +124,11 @@ class _EmployeeServiceImpl implements EmployeeService {
   @override
   Future<double> getEmployeeNetSalaryById(int id) async {
     final employee = await _employeeRepo.getById(id);
-    return employee!.netSalary;
+
+    if (employee == null) {
+      throw StateError('Employee not found with ID $id.');
+    }
+
+    return employee.netSalary;
   }
 }
