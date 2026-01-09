@@ -28,6 +28,7 @@ void main() {
   setUpAll(() {
     registerFallbackValue(EmployeeFilter());
     registerFallbackValue(Employee());
+    registerFallbackValue(Country());
   });
   group('EmployeeService - getEmployees()', () {
     final tEmployeesFromRepo = [
@@ -487,6 +488,35 @@ void main() {
         ).thenThrow(Exception('Database error while fetching countries'));
 
         expect(() => service.getCountries(), throwsA(isA<Exception>()));
+      },
+    );
+  });
+  group('EmployeeService - createCountry', () {
+    final tCountry = Country(name: 'Japan', taxRate: 0.05);
+
+    test('should return the new country ID on success', () async {
+      const expectedId = 101;
+      when(
+        () => mockCountryRepo.create(any()),
+      ).thenAnswer((_) async => expectedId);
+
+      final result = await service.createCountry(tCountry);
+
+      expect(result, expectedId);
+      verify(() => mockCountryRepo.create(tCountry)).called(1);
+    });
+
+    test(
+      'should propagate exceptions when the country repository fails',
+      () async {
+        when(
+          () => mockCountryRepo.create(any()),
+        ).thenThrow(Exception('Database error while adding country'));
+
+        expect(
+          () => service.createCountry(tCountry),
+          throwsA(isA<Exception>()),
+        );
       },
     );
   });
