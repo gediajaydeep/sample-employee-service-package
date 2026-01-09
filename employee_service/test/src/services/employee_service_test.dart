@@ -31,6 +31,12 @@ void main() {
     registerFallbackValue(Employee());
     registerFallbackValue(Country());
   });
+  test('should create a valid instance without injecting repositories ', () {
+    final service = EmployeeService();
+
+    expect(service, isA<EmployeeService>());
+  });
+
   group('EmployeeService - getEmployees()', () {
     final tEmployeesFromRepo = [
       Employee(
