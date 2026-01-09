@@ -27,6 +27,7 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(EmployeeFilter());
+    registerFallbackValue(Employee());
   });
   group('EmployeeService - getEmployees()', () {
     final tEmployeesFromRepo = [
