@@ -252,4 +252,32 @@ void main() {
       );
     });
   });
+  group('EmployeeService - updateEmployee', () {
+    final tValidEmployee = Employee(
+      id: 1,
+      fullName: 'Jaydeep Gedia',
+      jobTitle: 'Lead Dev',
+      salary: 2000,
+      countryId: 1,
+    );
+
+    test('should complete successfully when repository returns 1', () async {
+      when(() => mockEmployeeRepo.update(any())).thenAnswer((_) async => 1);
+
+      await expectLater(service.updateEmployee(tValidEmployee), completes);
+
+      verify(() => mockEmployeeRepo.update(tValidEmployee)).called(1);
+    });
+
+    test('should propogate exception if repository throws exception', () async {
+      when(() => mockEmployeeRepo.update(any())).thenThrow(Exception());
+
+      expect(
+        () => service.updateEmployee(tValidEmployee),
+        throwsA(isA<Exception>()),
+      );
+
+      verify(() => mockEmployeeRepo.update(tValidEmployee)).called(1);
+    });
+  });
 }
