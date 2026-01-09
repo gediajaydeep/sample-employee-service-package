@@ -656,5 +656,14 @@ void main() {
         throwsA(isA<StateError>()),
       );
     });
+
+    test('should throw Argument error if the Employee id is invalid', () async {
+      when(() => mockEmployeeRepo.getById(any())).thenAnswer((_) async => null);
+
+      expect(
+        () => service.getEmployeeNetSalaryById(0),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
   });
 }
