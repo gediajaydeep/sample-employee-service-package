@@ -76,4 +76,55 @@ void main() {
       expect(result, isEmpty);
     });
   });
+
+  group('EmployeeService - getEmployeeById', () {
+    const tId = 1;
+    final tEmployee = Employee(
+      id: tId,
+      fullName: 'Jaydeep Gedia',
+      jobTitle: 'Developer',
+      salary: 60000.0,
+      countryId: 1,
+      country: Country(id: 1, name: 'India', taxRate: 0.10),
+    );
+
+    test(
+      'should return an Employee when the repository finds a record',
+      () async {
+        when(
+          () => mockEmployeeRepo.getById(tId),
+        ).thenAnswer((_) async => tEmployee);
+
+        final result = await service.getEmployeeById(tId);
+
+        expect(result, equals(tEmployee));
+        verify(() => mockEmployeeRepo.getById(tId)).called(1);
+      },
+    );
+
+    test(
+      'should return null when the repository cannot find the record',
+      () async {
+        when(
+          () => mockEmployeeRepo.getById(any()),
+        ).thenAnswer((_) async => null);
+
+        final result = await service.getEmployeeById(999);
+
+        expect(result, isNull);
+        verify(() => mockEmployeeRepo.getById(999)).called(1);
+      },
+    );
+
+    test(
+      'should propagate (rethrow) exceptions if the repository fails',
+      () async {
+        when(
+          () => mockEmployeeRepo.getById(any()),
+        ).thenThrow(Exception('Database fetch failed'));
+
+        expect(() => service.getEmployeeById(tId), throwsA(isA<Exception>()));
+      },
+    );
+  });
 }
