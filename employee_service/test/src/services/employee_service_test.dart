@@ -419,5 +419,29 @@ void main() {
         );
       },
     );
+    test('should propagate exceptions when the repository fails', () async {
+      when(
+        () => mockEmployeeRepo.deleteById(any()),
+      ).thenThrow(Exception('Database disk error'));
+
+      expect(() => service.deleteEmployee(tId), throwsA(isA<Exception>()));
+    });
+
+    test(
+      'should throw ArgumentError if provided ID is invalid (<= 0)',
+      () async {
+        expect(
+          () => service.deleteEmployee(0),
+          throwsA(
+            isA<ArgumentError>().having(
+              (e) => e.message,
+              'message',
+              'A valid Employee ID is required for deletion.',
+            ),
+          ),
+        );
+        verifyNever(() => mockEmployeeRepo.deleteById(any()));
+      },
+    );
   });
 }
