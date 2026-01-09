@@ -158,5 +158,98 @@ void main() {
         throwsA(isA<Exception>()),
       );
     });
+    group('EmployeeService - _validateEmployee Logic', () {
+      test(
+        'should throw "Full name is required." if fullName is empty or null',
+        () async {
+          final invalid = Employee(
+            fullName: '',
+            jobTitle: 'Dev',
+            salary: 1000,
+            countryId: 1,
+          );
+
+          expect(
+            () => service.createEmployee(invalid),
+            throwsA(
+              isA<ArgumentError>().having(
+                (e) => e.message,
+                'message',
+                'Full name is required.',
+              ),
+            ),
+          );
+        },
+      );
+
+      test(
+        'should throw "Job title is required." if jobTitle is blank',
+        () async {
+          final invalid = Employee(
+            fullName: 'Jaydeep',
+            jobTitle: '   ',
+            salary: 1000,
+            countryId: 1,
+          );
+
+          expect(
+            () => service.createEmployee(invalid),
+            throwsA(
+              isA<ArgumentError>().having(
+                (e) => e.message,
+                'message',
+                'Job title is required.',
+              ),
+            ),
+          );
+        },
+      );
+
+      test(
+        'should throw "Salary must be greater than zero." if salary is 0 or negative',
+        () async {
+          final invalid = Employee(
+            fullName: 'Jaydeep',
+            jobTitle: 'Dev',
+            salary: 0,
+            countryId: 1,
+          );
+
+          expect(
+            () => service.createEmployee(invalid),
+            throwsA(
+              isA<ArgumentError>().having(
+                (e) => e.message,
+                'message',
+                'Salary must be greater than zero.',
+              ),
+            ),
+          );
+        },
+      );
+
+      test(
+        'should throw "A valid country id is required." if countryId is invalid',
+        () async {
+          final invalid = Employee(
+            fullName: 'Jaydeep',
+            jobTitle: 'Dev',
+            salary: 1000,
+            countryId: 0,
+          );
+
+          expect(
+            () => service.createEmployee(invalid),
+            throwsA(
+              isA<ArgumentError>().having(
+                (e) => e.message,
+                'message',
+                'A valid country id is required.',
+              ),
+            ),
+          );
+        },
+      );
+    });
   });
 }
