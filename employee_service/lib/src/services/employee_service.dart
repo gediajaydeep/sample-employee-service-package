@@ -85,6 +85,9 @@ class _EmployeeServiceImpl implements EmployeeService {
 
   @override
   Future<void> deleteEmployee(int id) async {
+    if (id <= 0) {
+      throw ArgumentError('A valid Employee ID is required for deletion.');
+    }
     final affectedRows = await _employeeRepo.deleteById(id);
 
     if (affectedRows == 0) {
