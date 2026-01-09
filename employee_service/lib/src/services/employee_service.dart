@@ -13,6 +13,7 @@ abstract class EmployeeService {
   Future<List<Employee>> getEmployees(EmployeeFilter filter);
   Future<Employee?> getEmployeeById(int id);
   Future<int> createEmployee(Employee employee);
+  Future<void> updateEmployee(Employee employee);
 }
 
 class _EmployeeServiceImpl implements EmployeeService {
@@ -50,5 +51,10 @@ class _EmployeeServiceImpl implements EmployeeService {
     if (employee.countryId == null || employee.countryId! <= 0) {
       throw ArgumentError('A valid country id is required.');
     }
+  }
+
+  @override
+  Future<void> updateEmployee(Employee employee) {
+    return _employeeRepo.update(employee);
   }
 }
