@@ -17,7 +17,9 @@ abstract class EmployeeService {
   Future<int> createEmployee(Employee employee);
   Future<void> updateEmployee(Employee employee);
   Future<void> deleteEmployee(int id);
+
   Future<List<Country>> getCountries();
+  Future<int> createCountry(Country country);
 }
 
 class _EmployeeServiceImpl implements EmployeeService {
@@ -100,4 +102,9 @@ class _EmployeeServiceImpl implements EmployeeService {
 
   @override
   Future<List<Country>> getCountries() => _countryRepo.getAll();
+
+  @override
+  Future<int> createCountry(Country country) {
+    return _countryRepo.create(country);
+  }
 }
