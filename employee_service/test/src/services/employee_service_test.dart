@@ -127,4 +127,35 @@ void main() {
       },
     );
   });
+  group('EmployeeService - createEmployee', () {
+    final tEmployee = Employee(
+      fullName: 'Jaydeep Gedia',
+      jobTitle: 'Developer',
+      salary: 50000.0,
+      countryId: 1,
+    );
+
+    test(
+      'should return new ID when repository successfully creates record',
+      () async {
+        when(() => mockEmployeeRepo.create(any())).thenAnswer((_) async => 1);
+
+        final result = await service.createEmployee(tEmployee);
+
+        expect(result, 1);
+        verify(() => mockEmployeeRepo.create(tEmployee)).called(1);
+      },
+    );
+
+    test('should propagate exceptions when the repository fails', () async {
+      when(
+        () => mockEmployeeRepo.create(any()),
+      ).thenThrow(Exception('Database Write Failure'));
+
+      expect(
+        () => service.createEmployee(tEmployee),
+        throwsA(isA<Exception>()),
+      );
+    });
+  });
 }
