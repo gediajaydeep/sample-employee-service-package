@@ -20,6 +20,7 @@ abstract class EmployeeService {
 
   Future<List<Country>> getCountries();
   Future<int> createCountry(Country country);
+  Future<double> getEmployeeNetSalaryById(int id);
 }
 
 class _EmployeeServiceImpl implements EmployeeService {
@@ -118,5 +119,11 @@ class _EmployeeServiceImpl implements EmployeeService {
     }
 
     return _countryRepo.create(country);
+  }
+
+  @override
+  Future<double> getEmployeeNetSalaryById(int id) async {
+    final employee = await _employeeRepo.getById(id);
+    return employee!.netSalary;
   }
 }
