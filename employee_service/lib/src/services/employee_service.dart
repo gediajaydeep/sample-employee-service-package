@@ -123,6 +123,10 @@ class _EmployeeServiceImpl implements EmployeeService {
 
   @override
   Future<double> getEmployeeNetSalaryById(int id) async {
+    if (id <= 0) {
+      throw ArgumentError('A valid Employee ID is required.');
+    }
+
     final employee = await _employeeRepo.getById(id);
 
     if (employee == null) {
