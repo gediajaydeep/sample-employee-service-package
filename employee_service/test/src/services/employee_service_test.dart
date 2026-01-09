@@ -391,4 +391,13 @@ void main() {
       );
     });
   });
+  group('EmployeeService - deleteEmployee', () {
+    const tId = 5;
+    test('should complete successfully when repository returns 1', () async {
+      when(() => mockEmployeeRepo.deleteById(tId)).thenAnswer((_) async => 1);
+
+      await expectLater(service.deleteEmployee(tId), completes);
+      verify(() => mockEmployeeRepo.deleteById(tId)).called(1);
+    });
+  });
 }
