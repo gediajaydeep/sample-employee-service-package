@@ -1,4 +1,4 @@
-import '../models/country.dart';
+import '../models/index.dart' show Country;
 
 abstract class CountryRepository {
   Future<int> create(Country country);

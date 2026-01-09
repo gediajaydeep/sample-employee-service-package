@@ -1,10 +1,4 @@
-import 'package:employee_service/src/models/country.dart';
-import 'package:employee_service/src/models/employee.dart';
-import 'package:employee_service/src/models/employee_filter.dart';
-import 'package:employee_service/src/models/salary_metrics.dart';
-import 'package:employee_service/src/repositories/country_repository.dart';
-import 'package:employee_service/src/repositories/employee_repository.dart';
-import 'package:employee_service/src/services/employee_service.dart';
+import 'package:employee_service/employee_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

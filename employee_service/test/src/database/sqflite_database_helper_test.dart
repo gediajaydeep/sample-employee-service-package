@@ -1,5 +1,4 @@
-import 'package:employee_service/src/database/database_schemas.dart';
-import 'package:employee_service/src/database/sqflite_database_helper.dart';
+import 'package:employee_service/src/database/index.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 

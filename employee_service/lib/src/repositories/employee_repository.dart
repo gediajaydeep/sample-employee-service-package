@@ -1,6 +1,4 @@
-import '../models/employee.dart';
-import '../models/salary_metrics.dart';
-import '../models/employee_filter.dart';
+import '../models/index.dart';
 
 abstract class EmployeeRepository {
   Future<int> create(Employee employee);

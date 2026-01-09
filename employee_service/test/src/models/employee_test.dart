@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:employee_service/src/models/country.dart';
-import 'package:employee_service/src/models/employee.dart';
+import 'package:employee_service/src/models/index.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -52,7 +51,6 @@ void main() {
   });
 
   group('Employee Model - Salary Calculations', () {
-    
     test('netSalary should return 900 when gross is 1000 and tax is 10%', () {
       final employee = Employee(
         fullName: 'Jaydeep',
@@ -72,7 +70,7 @@ void main() {
         jobTitle: 'Dev',
         salary: 1000.0,
         countryId: 1,
-        country: null, 
+        country: null,
       );
 
       expect(employee.netSalary, 1000.0);

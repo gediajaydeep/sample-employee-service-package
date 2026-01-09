@@ -1,8 +1,6 @@
-import 'package:employee_service/src/database/database_schemas.dart';
-import 'package:employee_service/src/models/country.dart';
-import 'package:employee_service/src/repositories/country_repository.dart';
-
-import '../database/database_helper.dart';
+import '../database/index.dart';
+import '../repositories/index.dart';
+import '../models/index.dart';
 
 class LocalCountryRepository implements CountryRepository {
   final DatabaseHelper _dbHelper;

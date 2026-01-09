@@ -1,13 +1,6 @@
-import 'package:employee_service/src/database/database_helper.dart';
-import 'package:employee_service/src/models/country.dart';
-import 'package:employee_service/src/models/salary_metrics.dart';
-import 'package:employee_service/src/repositories/local_country_repository.dart';
-import 'package:employee_service/src/repositories/local_employee_repository.dart';
-
-import '../repositories/employee_repository.dart';
-import '../repositories/country_repository.dart';
-import '../models/employee.dart';
-import '../models/employee_filter.dart';
+import '../database/index.dart';
+import '../models/index.dart';
+import '../repositories/index.dart';
 
 abstract class EmployeeService {
   factory EmployeeService({

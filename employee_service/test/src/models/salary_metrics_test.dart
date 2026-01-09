@@ -1,4 +1,4 @@
-import 'package:employee_service/src/models/salary_metrics.dart';
+import 'package:employee_service/src/models/index.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,9 +1,6 @@
-import 'package:employee_service/src/database/database_helper.dart';
-import 'package:employee_service/src/database/database_schemas.dart';
-import 'package:employee_service/src/models/employee.dart';
-import 'package:employee_service/src/models/employee_filter.dart';
-import 'package:employee_service/src/models/salary_metrics.dart';
-import 'package:employee_service/src/repositories/employee_repository.dart';
+import '../database/index.dart';
+import '../models/index.dart';
+import '../repositories/index.dart';
 
 class LocalEmployeeRepository implements EmployeeRepository {
   final DatabaseHelper _db;
