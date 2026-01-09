@@ -85,6 +85,10 @@ class _EmployeeServiceImpl implements EmployeeService {
 
   @override
   Future<void> deleteEmployee(int id) async {
-    await _employeeRepo.deleteById(id);
+    final affectedRows = await _employeeRepo.deleteById(id);
+
+    if (affectedRows == 0) {
+      throw StateError('Delete failed: No employee found with ID $id.');
+    }
   }
 }
