@@ -399,5 +399,25 @@ void main() {
       await expectLater(service.deleteEmployee(tId), completes);
       verify(() => mockEmployeeRepo.deleteById(tId)).called(1);
     });
+
+    test(
+      'should throw StateError when repository returns 0 (ID not found)',
+      () async {
+        when(
+          () => mockEmployeeRepo.deleteById(any()),
+        ).thenAnswer((_) async => 0);
+
+        expect(
+          () => service.deleteEmployee(tId),
+          throwsA(
+            isA<StateError>().having(
+              (e) => e.message,
+              'message',
+              contains('No employee found with ID $tId'),
+            ),
+          ),
+        );
+      },
+    );
   });
 }
