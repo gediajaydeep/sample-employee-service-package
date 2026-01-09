@@ -1,6 +1,7 @@
 import 'package:employee_service/src/models/country.dart';
 import 'package:employee_service/src/models/employee.dart';
 import 'package:employee_service/src/models/employee_filter.dart';
+import 'package:employee_service/src/models/salary_metrics.dart';
 import 'package:employee_service/src/repositories/country_repository.dart';
 import 'package:employee_service/src/repositories/employee_repository.dart';
 import 'package:employee_service/src/services/employee_service.dart';
@@ -665,5 +666,76 @@ void main() {
         throwsA(isA<ArgumentError>()),
       );
     });
+  });
+
+  group('EmployeeService - getSalaryStats', () {
+    final tMetrics = SalaryMetrics(
+      averageSalary: 5000.0,
+      minSalary: 2000.0,
+      maxSalary: 8000.0,
+      totalEmployees: 10,
+    );
+
+    test('should return metrics from repository for a given filter', () async {
+      final filter = EmployeeFilter()..byCountryId(1); // Filter for India
+      when(
+        () => mockEmployeeRepo.getMetrics(filter),
+      ).thenAnswer((_) async => tMetrics);
+
+      final result = await service.getSalaryStats(filter: filter);
+
+      expect(result.averageSalary, 5000.0);
+      expect(result.totalEmployees, 10);
+      verify(() => mockEmployeeRepo.getMetrics(filter)).called(1);
+    });
+
+    test(
+      'should return global metrics when an no filter or empty filter is provided',
+      () async {
+        final emptyFilter = EmployeeFilter();
+        final tGlobalMetrics = SalaryMetrics(
+          averageSalary: 4500.0,
+          minSalary: 1500.0,
+          maxSalary: 12000.0,
+          totalEmployees: 150,
+        );
+        when(
+          () => mockEmployeeRepo.getMetrics(
+            any(that: predicate<EmployeeFilter>((filter) => filter.isEmpty)),
+          ),
+        ).thenAnswer((_) async => tGlobalMetrics);
+
+        final result = await service.getSalaryStats(filter: emptyFilter);
+
+        expect(result.totalEmployees, 150);
+        expect(result.averageSalary, 4500.0);
+
+        final result2 = await service.getSalaryStats();
+
+        expect(result2.totalEmployees, 150);
+        expect(result2.averageSalary, 4500.0);
+
+        verify(
+          () => mockEmployeeRepo.getMetrics(
+            any(that: predicate<EmployeeFilter>((filter) => filter.isEmpty)),
+          ),
+        ).called(2);
+      },
+    );
+    test(
+      'should propagate exceptions if repository metrics fetch fails',
+      () async {
+        // Arrange
+        final filter = EmployeeFilter();
+        when(
+          () => mockEmployeeRepo.getMetrics(any()),
+        ).thenThrow(Exception('Database aggregate error'));
+
+        expect(
+          () => service.getSalaryStats(filter: filter),
+          throwsA(isA<Exception>()),
+        );
+      },
+    );
   });
 }
