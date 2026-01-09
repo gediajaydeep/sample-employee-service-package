@@ -11,6 +11,7 @@ abstract class EmployeeService {
     return _EmployeeServiceImpl(employeeRepo, countryRepo);
   }
   Future<List<Employee>> getEmployees(EmployeeFilter filter);
+  Future<Employee?> getEmployeeById(int id);
 }
 
 class _EmployeeServiceImpl implements EmployeeService {
@@ -22,4 +23,7 @@ class _EmployeeServiceImpl implements EmployeeService {
   @override
   Future<List<Employee>> getEmployees(EmployeeFilter filter) =>
       _employeeRepo.getEmployees(filter);
+
+  @override
+  Future<Employee?> getEmployeeById(int id) => _employeeRepo.getById(id);
 }
