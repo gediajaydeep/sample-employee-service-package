@@ -82,19 +82,41 @@ class LocalEmployeeRepository implements EmployeeRepository {
 
   @override
   Future<int> update(Employee employee) async {
-    const sql =
+    final List<String> setClauses = [];
+    final List<dynamic> args = [];
+
+    if (employee.fullName != null && employee.fullName!.trim().isNotEmpty) {
+      setClauses.add('full_name = ?');
+      args.add(employee.fullName);
+    }
+
+    if (employee.jobTitle != null && employee.jobTitle!.trim().isNotEmpty) {
+      setClauses.add('job_title = ?');
+      args.add(employee.jobTitle);
+    }
+
+    if (employee.salary != null && employee.salary! > 0) {
+      setClauses.add('salary = ?');
+      args.add(employee.salary);
+    }
+
+    if (employee.countryId != null && employee.countryId! > 0) {
+      setClauses.add('country_id = ?');
+      args.add(employee.countryId);
+    }
+
+    if (setClauses.isEmpty) return 0;
+
+    args.add(employee.id);
+
+    final String sql =
         '''
-      UPDATE ${DatabaseSchemas.employeesTable} 
-      SET full_name = ?, job_title = ?, salary = ?, country_id = ? 
-      WHERE id = ?
-    ''';
-    return await _db.update(sql, [
-      employee.fullName,
-      employee.jobTitle,
-      employee.salary,
-      employee.countryId,
-      employee.id,
-    ]);
+    UPDATE ${DatabaseSchemas.employeesTable} 
+    SET ${setClauses.join(', ')} 
+    WHERE id = ?
+  ''';
+
+    return await _db.update(sql, args);
   }
 
   _QueryParts _buildFilterQuery(EmployeeFilter filter) {
