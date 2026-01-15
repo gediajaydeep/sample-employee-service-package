@@ -16,7 +16,7 @@ The `employee_service` package provides the following out-of-the-box features:
 * **Dynamic Updates**: Smart repository logic that only updates modified fields, preserving existing database integrity.
 * **Global Analytics**: Real-time aggregate metrics including average, minimum, and maximum salary statistics.
 
-For detailed API documentation, implementation details, and architecture diagrams, please visit the **[Employee Service Documentation](https://github.com/incubyte-hiring/incubyte-sm-kata-gediajaydeep/tree/main/employee_service)**.
+For detailed API documentation, implementation details, and architecture diagrams, please visit the **[Employee Service Documentation](https://github.com/gediajaydeep/sample-employee-service-package/tree/main/employee_service)**.
 
 ## 🤖 AI Collaboration
 
