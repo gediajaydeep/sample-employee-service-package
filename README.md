@@ -4,7 +4,7 @@ This repository hosts the **Employee Service**, a specialized Dart/Flutter modul
 
 ## 📂 Project Structure
 
-* **[`employee_service`](https://www.google.com/search?q=./employee_service/README.md)**: The standalone package containing all business logic, database schemas, and payroll processing engines.
+* **[`employee_service`](https://github.com/gediajaydeep/sample-employee-service-package/tree/main/employee_service)**: The standalone package containing all business logic, database schemas, and payroll processing engines.
 
 ## 🛠 Key Capabilities
 
